@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+   <script src="/static/js/jquery.min.js"></script>
+    <script>
+    $(function(){
+    $('#btnload').click(function(){
+     $.ajax({
+     'url':'/ajax_handle',  //访问的url地址
+     'dateType':'json',  //想要获得的返回数据类型
+     'async':false,  //异步执行模式关闭
+     }).success(function(date){  //执行成功的回调函数（含有返回的数据（date））
+      alert(date["msg"])
+     })
+    })
+    })
+</script>
+</head>
+<body>
+<input type="button" value="发起ajax请求" id="btnload" \>
+<p id="p1"></p>
+</body>
+</html>
