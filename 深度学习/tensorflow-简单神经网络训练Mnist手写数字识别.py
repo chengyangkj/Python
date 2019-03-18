@@ -10,6 +10,7 @@ import tensorflow as tf
 #4.梯度下降优化
 
 #定义神经网络全连接层处理函数
+choose = input("请输入你要执行的（1.训练,2.预测）")
 def full_connected():
     #1.建立数据的占位符 x[None,784] y_true [None,10]
     #x（特征值）: None是图片的数量不确定, 784是一张手写图片的所有像素大小（28*28=784）
@@ -56,21 +57,42 @@ def full_connected():
     init_op = tf.global_variables_initializer()
     #定义一个合并收集到的变量的op (可视化学习步骤)
     merged = tf.summary.merge_all()
+
+    # 创建一个saver 用于保存训练完成后的模型
+    saver = tf.train.Saver()
     #开启会话去训练
     with tf.Session() as sess:
-        #初始化变量
-        sess.run(init_op)
-        #建立events文件，然后写入
-        filewriter = tf.summary.FileWriter("./tmp/summary/test/", graph=sess.graph)
-        #迭代步数去训练
-        for i in range(2000):
-            #取出数据集的特征值和目标值
-            mnist_x,mnist_y = mnist.train.next_batch(50)
-            sess.run(train_op, feed_dict={x:mnist_x, y_true:mnist_y})
-            #写入每步训练的值（可视化学习）
-            summary = sess.run(merged, feed_dict={x:mnist_x, y_true:mnist_y})
-            filewriter.add_summary(summary, i)
-            print("训练第%d次，准确率为%f"%(i,sess.run(accuracy, feed_dict={x:mnist_x, y_true:mnist_y})))
+        #当为训练时
+        if choose == 1:
+            #初始化变量
+            sess.run(init_op)
+            #建立events文件，然后写入
+            filewriter = tf.summary.FileWriter("./tmp/summary/test/", graph=sess.graph)
+            #迭代步数去训练
+            for i in range(2000):
+                #取出数据集的特征值和目标值
+                mnist_x,mnist_y = mnist.train.next_batch(50)
+                sess.run(train_op, feed_dict={x:mnist_x, y_true:mnist_y})
+                #写入每步训练的值（可视化学习）
+                summary = sess.run(merged, feed_dict={x:mnist_x, y_true:mnist_y})
+                filewriter.add_summary(summary, i)
+                print("训练第%d次，准确率为%f"%(i,sess.run(accuracy, feed_dict={x:mnist_x, y_true:mnist_y})))
+            #在训练结束后保存模型
+            saver.save(sess, "./tmp/训练结果/手写模型")
+        else:
+            #打开保存的模型文件
+            saver.restore(sess, "./tmp/训练结果/手写模型")
+            for i in range(100):
+                #取出一个测试数据集
+                x_test, y_test = mnist.test.next_batch(1)
+                print ("第%d张图片，手写数字目标是：%d,预测结果是：%d,预测准确性%f"%(
+                    i,
+                    #tf.argmax 将one-hont编码转换为数据形式
+                    tf.argmax(y_test, 1).eval(),
+                    tf.argmax(sess.run(y_predict,feed_dict={x:x_test, y_true:y_test}), 1).eval(),
+                    1-sess.run(loss,feed_dict={x:x_test, y_true:y_test})
+                ))
+
     return None
 # tensorboard --logdir="./tmp/summary/test/" 启动tensorboard
 
