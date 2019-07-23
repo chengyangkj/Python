@@ -1,5 +1,7 @@
 import tensorflow as tf
 import os
+
+
 #1,创建文件队列 将文件名读入队列
 
 #2
