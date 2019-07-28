@@ -1,4 +1,5 @@
 import tensorflow as tf
+import numpy as np
 import os
 
 #读取验证码图片进行处理
@@ -18,10 +19,10 @@ def picread(filelist):
     #3,解码 成uint8
     image = tf.image.decode_jpeg(value)
     #4,统一图片的大小 像素uint8转float32
-    image_resize = tf.image.resize_images(image,[200,200])
+    image_resize = tf.image.resize_images(image,[80,30])
 
     #固定图片的形状 （通道数）因为批处理不支持不固定形状的图片 使用静态固定方法
-    image_resize.set_shape([200,200,3])
+    image_resize.set_shape([80,30,3])
 
     #进行批处理 图片批处理时一定要固定形状（长 宽 通道数）一次取出20个改变大小后的图片
     image_batch = tf.train.batch([image_resize],batch_size=20,num_threads=2,capacity=20)
@@ -39,7 +40,11 @@ if __name__ == "__main__":
         # 开启读文件的线程
         threads = tf.train.start_queue_runners(sess=sess, coord=coord)
 
-
+        for i in range(20):
+            img = image_resize[i].eval()
+            print(np.array(img).shape)
+            img_string = img.tostring()
+            print(len(img_string))
         #回收子线程
         coord.request_stop()
         coord.join()

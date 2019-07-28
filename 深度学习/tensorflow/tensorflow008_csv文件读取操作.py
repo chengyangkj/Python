@@ -24,6 +24,7 @@ def csvread(filelist):
     record = [["None"],["None"]]
     example,label = tf.decode_csv(value,record_defaults=record)
 
+
     #4,想要一次读取多个数据，就要进行批处理 管道（将解码后的文件再放入队列中） 批处理的大小 和批处理的队列大小 和数据大小无影响 只决定这一次取多少个数据
     #tf.train.batch(tensor,batch_size,num_threads,capacity)
     # tensor指批处理队列中要存放的tensor数据，
