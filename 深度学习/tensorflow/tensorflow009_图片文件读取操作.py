@@ -19,10 +19,10 @@ def picread(filelist):
     #3,解码 成uint8
     image = tf.image.decode_jpeg(value)
     #4,统一图片的大小 像素uint8转float32
-    image_resize = tf.image.resize_images(image,[80,30])
+    image_resize = tf.image.resize_images(image,[30,80])
 
     #固定图片的形状 （通道数）因为批处理不支持不固定形状的图片 使用静态固定方法
-    image_resize.set_shape([80,30,3])
+    image_resize.set_shape([30,80,3])
 
     #进行批处理 图片批处理时一定要固定形状（长 宽 通道数）一次取出20个改变大小后的图片
     image_batch = tf.train.batch([image_resize],batch_size=20,num_threads=2,capacity=20)

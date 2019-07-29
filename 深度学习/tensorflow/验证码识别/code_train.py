@@ -150,12 +150,13 @@ if __name__ == '__main__':
         threads = tf.train.start_queue_runners(sess, coord=coord)
 
         # 训练识别程序
-        for i in range(2000):
+        for i in range(20000):
             sess.run(train_op)
 
             print("第%d批次的准确率为：%f,损失%f" % (i, accuracy.eval(), mean_loss.eval()))
             # 在训练结束后保存模型
         saver.save(sess, "./tmp/result/codechar")
+
         # 回收线程
         coord.request_stop()
 

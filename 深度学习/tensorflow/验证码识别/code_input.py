@@ -37,6 +37,8 @@ def get_imgBatch(img_path):
     lists = os.listdir(img_path)
     img_list = [os.path.join(img_path,name) for name in lists]
 
+    #排序图片
+    img_list.sort()
     #构建图片文件名队列
     file_name_quque = tf.train.string_input_producer(img_list)
 
@@ -93,7 +95,7 @@ def save_to_recorder(img_batch,label_batch):
     # 建立TFRecords 存储器
     writer = tf.io.TFRecordWriter(FLAGS.tfrecords_dir)
 
-    for i in range(5000):
+    for i in range(3000):
         print("写第：%d"%(i))
         # 取出第i个图片数据，转换相应类型,图片的特征值要转换成字符串形式
 
